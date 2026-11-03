@@ -1,0 +1,34 @@
+#tells us which file should not be uploaded to the git repository. It is used to ignore files that are not necessary for version control, such as temporary files, build artifacts, or sensitive information.
+
+# Dependencies
+node_modules/
+venv/
+.venv/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Build files
+dist/
+build/
+coverage/
+
+# Python generated files
+__pycache__/
+*.py[cod]
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Test and temporary files
+.pytest_cache/
+.cache/
