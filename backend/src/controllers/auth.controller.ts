@@ -159,6 +159,7 @@ export const login = async (req: Request, res: Response) => {
     });
   }
 };
+
 export const getMe = async (req: Request, res: Response) => {
   try {
     const user = await prisma.user.findUnique({
