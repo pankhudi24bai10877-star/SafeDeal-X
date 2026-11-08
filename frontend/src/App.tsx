@@ -1,327 +1,208 @@
-/*navigation bar and hero section */
-
-
+import { useState } from "react";
+import "./App.css";
+import AuthPage from "./pages/AuthPage";
+import DashboardPage from "./pages/DashboardPage";
 
 function App() {
+  const [page, setPage] = useState<
+    "landing" | "login" | "register" | "dashboard"
+  >("landing");
+
+  const [user, setUser] = useState<{
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+  } | null>(null);
+
+  if (page === "login" || page === "register") {
+    return (
+      <AuthPage
+        mode={page}
+        onModeChange={(mode) => setPage(mode)}
+        onBack={() => setPage("landing")}
+        onSuccess={(authenticatedUser) => {
+          setUser(authenticatedUser);
+          setPage("dashboard");
+        }}
+      />
+    );
+  }
+
+  if (page === "dashboard" && user) {
+    return (
+      <DashboardPage
+        user={user}
+        onLogout={() => {
+          localStorage.removeItem("safedeal_token");
+          localStorage.removeItem("safedeal_user");
+          setUser(null);
+          setPage("landing");
+        }}
+      />
+    );
+  }
+
   return (
-    <main className="min-h-screen bg-[#080D19] text-white">
-
-      {/* Navigation Bar */}
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
-
-        <a href="#" className="text-2xl font-bold tracking-tight">
-          SafeDeal <span className="text-blue-500">X</span>
+    <main className="landing-page">
+      <nav className="landing-nav">
+        <a href="#" className="brand" aria-label="SafeDeal X home">
+          <span className="brand-mark">S</span>
+          <span>SafeDeal<span className="brand-x">X</span></span>
         </a>
 
-        <div className="hidden items-center gap-8 text-sm text-slate-400 md:flex">
-          <a href="#features" className="transition hover:text-white">
-            Features
-          </a>
-          <a href="#how-it-works" className="transition hover:text-white">
-            How It Works
-          </a>
-          <a href="#about" className="transition hover:text-white">
-            About
-          </a>
+        <div className="landing-nav-links">
+          <a href="#features">Features</a>
+          <a href="#how-it-works">How it works</a>
+          <a href="#about">About</a>
         </div>
 
-        <button className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold transition hover:bg-blue-500">
-          Connect Wallet
+        <button className="button button-outline nav-action" onClick={() => setPage("login")}>
+          Log in <span aria-hidden="true">↗</span>
         </button>
-
       </nav>
 
-      {/* Hero Section */}
-      <section className="mx-auto grid max-w-7xl items-center gap-14 px-6 py-24 md:grid-cols-2">
-
-        {/* Left Content */}
-        <div>
-
-          <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-sm text-blue-400">
-            <span className="h-2 w-2 rounded-full bg-blue-400"></span>
-            AI-Powered · Blockchain-Secured
-          </div>
-
-          <h1 className="text-5xl font-bold leading-tight tracking-tight md:text-6xl">
-            Work with confidence.
-            <span className="mt-2 block text-blue-500">
-              Get paid with trust.
-            </span>
+      <section className="landing-hero">
+        <div className="hero-copy">
+          <div className="eyebrow"><span className="status-dot" /> AI-powered · Blockchain-secured</div>
+          <h1>
+            Good work deserves
+            <span>great trust.</span>
           </h1>
-
-          <p className="mt-7 max-w-xl text-lg leading-8 text-slate-400">
-            A smarter way to manage freelance transactions.
-            Create clear agreements, secure payments through
-            blockchain escrow, and resolve disputes with AI assistance.
+          <p className="hero-description">
+            A calmer, smarter way to work together. Set clear milestones, protect every payment, and build partnerships that last.
           </p>
-
-          <div className="mt-9 flex flex-wrap gap-4">
-
-            <button className="rounded-lg bg-blue-600 px-7 py-3.5 font-semibold transition hover:bg-blue-500">
-              Get Started →
+          <div className="hero-actions">
+            <button className="button button-primary" onClick={() => setPage("register")}>
+              Get started <span aria-hidden="true">→</span>
             </button>
-
-            <a
-              href="#features"
-              className="rounded-lg border border-slate-700 px-7 py-3.5 font-semibold text-slate-300 transition hover:border-slate-500 hover:text-white"
-            >
-              Explore Features
+            <a className="button button-quiet" href="#how-it-works">
+              See how it works <span aria-hidden="true">↓</span>
             </a>
-
           </div>
-
-          <div className="mt-12 flex flex-wrap gap-8 text-sm text-slate-400">
-            <div>
-              <p className="text-xl font-bold text-white">AI</p>
-              <p>Contract Intelligence</p>
+          <div className="hero-proof">
+            <div className="proof-avatars" aria-hidden="true">
+              <span>J</span><span>M</span><span>A</span>
             </div>
-
-            <div>
-              <p className="text-xl font-bold text-white">Web3</p>
-              <p>Secure Escrow</p>
-            </div>
-
-            <div>
-              <p className="text-xl font-bold text-white">Fair</p>
-              <p>Dispute Resolution</p>
-            </div>
-          </div>
-
-        </div>
-
-        {/* Right Visual Preview */}
-        <div className="relative">
-
-          <div className="absolute -inset-8 rounded-full bg-blue-600/10 blur-3xl"></div>
-
-          <div className="relative rounded-2xl border border-slate-700 bg-[#111827] p-6 shadow-2xl">
-
-            <div className="flex items-center justify-between border-b border-slate-700 pb-5">
-              <div>
-                <p className="text-sm text-slate-400">Transaction Overview</p>
-                <h2 className="mt-1 text-xl font-semibold">Project #SDX-1024</h2>
-              </div>
-
-              <span className="rounded-full bg-green-500/10 px-3 py-1 text-xs font-medium text-green-400">
-                Protected
-              </span>
-            </div>
-
-            <div className="py-8">
-              <p className="text-sm text-slate-400">Escrow Balance</p>
-              <h3 className="mt-2 text-4xl font-bold">0.50 ETH</h3>
-              <p className="mt-2 text-sm text-slate-500">
-                Illustrative testnet transaction
-              </p>
-            </div>
-
-            <div className="space-y-5">
-
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-400">Agreement</span>
-                <span className="text-sm text-green-400">Verified</span>
-              </div>
-
-              <div className="h-2 overflow-hidden rounded-full bg-slate-700">
-                <div className="h-full w-full rounded-full bg-blue-500"></div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-400">Milestone 1</span>
-                <span className="text-sm text-blue-400">In Progress</span>
-              </div>
-
-              <div className="h-2 overflow-hidden rounded-full bg-slate-700">
-                <div className="h-full w-2/3 rounded-full bg-blue-500"></div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-400">Payment Security</span>
-                <span className="text-sm text-green-400">Escrow Locked</span>
-              </div>
-
-            </div>
-
-            <div className="mt-8 rounded-xl border border-blue-500/20 bg-blue-500/10 p-4">
-              <p className="text-sm font-semibold text-blue-400">
-                SafeDeal X Protection
-              </p>
-              <p className="mt-1 text-xs leading-5 text-slate-400">
-                Funds remain locked until the agreed milestone conditions
-                are satisfied and the payment is authorized.
-              </p>
-            </div>
-
+            <p><strong>Built for better collaboration</strong><br />For independent minds and ambitious teams</p>
           </div>
         </div>
 
-      </section>
-      
-      {/* Features Section */}
-      <section id="features" className="border-t border-slate-800 bg-[#0B1220] px-6 py-24">
-        <div className="mx-auto max-w-7xl">
-
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-widest text-blue-400">
-              Why SafeDeal X?
-            </p>
-            <h2 className="mt-4 text-4xl font-bold">
-              Everything you need for a safer deal.
-            </h2>
-            <p className="mt-5 leading-7 text-slate-400">
-              Intelligent tools and blockchain technology work together
-              to protect both clients and freelancers.
-            </p>
+        <div className="hero-art" aria-label="Illustration of collaborators working together">
+          <div className="art-orbit orbit-one" />
+          <div className="art-orbit orbit-two" />
+          <div className="art-sparkle sparkle-one">✦</div>
+          <div className="art-sparkle sparkle-two">✧</div>
+          <div className="collab-card">
+            <div className="collab-card-top">
+              <div><span className="mini-label">YOUR WORKSPACE</span><strong>Brand refresh</strong></div>
+              <span className="card-menu">•••</span>
+            </div>
+            <div className="collab-art">
+              <svg viewBox="0 0 520 340" role="img" aria-labelledby="team-art-title">
+                <title id="team-art-title">Two creative collaborators working on laptops</title>
+                <ellipse cx="260" cy="301" rx="190" ry="19" fill="#dcecff" />
+                <path d="M66 242c13-67 81-119 172-119 93 0 160 52 176 119v41H66z" fill="#eaf3ff" />
+                <rect x="113" y="215" width="294" height="13" rx="6.5" fill="#7fa8f8" />
+                <path d="M144 229h235l-16 13H160z" fill="#c6d9fc" />
+                <rect x="227" y="174" width="91" height="68" rx="7" fill="#263e71" />
+                <rect x="234" y="181" width="77" height="53" rx="3" fill="#d9eaff" />
+                <rect x="243" y="191" width="34" height="5" rx="2.5" fill="#6e9df1" />
+                <rect x="243" y="202" width="57" height="4" rx="2" fill="#afc7f5" />
+                <rect x="243" y="212" width="47" height="4" rx="2" fill="#afc7f5" />
+                <circle cx="174" cy="91" r="31" fill="#f3bf9e" />
+                <path d="M144 91c0-25 16-43 37-43 24 0 36 17 35 40-12-5-21-14-26-23-8 13-25 22-46 26z" fill="#23365e" />
+                <path d="M126 200c2-48 21-79 51-79s51 31 53 79z" fill="#4a78dc" />
+                <path d="M155 124l19 26 19-26" fill="#fff" opacity=".8" />
+                <path d="M132 202h75l23 20h-89z" fill="#fff" />
+                <circle cx="349" cy="91" r="30" fill="#d99a76" />
+                <path d="M319 88c2-27 19-43 40-43 23 0 34 17 34 38-15-1-26-9-33-19-9 12-24 20-41 24z" fill="#35446d" />
+                <path d="M296 200c2-47 21-78 53-78 30 0 50 31 52 78z" fill="#8bbaf7" />
+                <path d="M327 124l22 27 19-27" fill="#fff" opacity=".85" />
+                <path d="M300 202h80l21 20h-91z" fill="#fff" />
+                <path d="M145 203l-34 25M374 203l34 25" stroke="#f3bf9e" strokeWidth="13" strokeLinecap="round" />
+                <circle cx="99" cy="102" r="12" fill="#b9d1ff" />
+                <circle cx="424" cy="144" r="8" fill="#b9d1ff" />
+                <path d="M91 158l5 11 11 5-11 5-5 11-5-11-11-5 11-5z" fill="#80a9f7" />
+              </svg>
+            </div>
+            <div className="collab-card-bottom">
+              <div className="collab-people"><span>J</span><span>M</span><span>+2</span></div>
+              <span className="secure-tag"><span className="tiny-check">✓</span> Escrow protected</span>
+            </div>
           </div>
-
-          <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-
-            {[
-              {
-                icon: "📄",
-                title: "AI Contract Intelligence",
-                description: "Analyze agreements, identify vague terms and generate clearer milestone-based contracts."
-              },
-              {
-                icon: "🔐",
-                title: "Blockchain Escrow",
-                description: "Secure milestone payments through smart contracts with transparent transaction records."
-              },
-              {
-                icon: "🤖",
-                title: "Deliverable Verification",
-                description: "Use AI to compare submitted work against agreed requirements and acceptance criteria."
-              },
-              {
-                icon: "⚖️",
-                title: "Fair Dispute Resolution",
-                description: "Organize evidence and generate neutral AI summaries to support human dispute decisions."
-              },
-              {
-                icon: "📊",
-                title: "Transaction Risk Analysis",
-                description: "Estimate transaction risks using project details and relevant historical patterns."
-              },
-              {
-                icon: "⭐",
-                title: "Trust & Reputation",
-                description: "Build credibility through completed milestones, verified feedback and transaction history."
-              }
-            ].map((feature) => (
-              <div
-                key={feature.title}
-                className="rounded-2xl border border-slate-800 bg-[#111827] p-7 transition hover:-translate-y-1 hover:border-blue-500/50"
-              >
-                <div className="text-3xl">{feature.icon}</div>
-                <h3 className="mt-6 text-xl font-semibold">
-                  {feature.title}
-                </h3>
-                <p className="mt-3 text-sm leading-7 text-slate-400">
-                  {feature.description}
-                </p>
-              </div>
-            ))}
-
-          </div>
+          <div className="floating-note note-top"><span className="note-icon">✓</span><span><strong>Milestone approved</strong><small>Payment released securely</small></span></div>
+          <div className="floating-note note-bottom"><span className="note-icon note-blue">✦</span><span><strong>Better work, together</strong><small>One clear step at a time</small></span></div>
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section id="how-it-works" className="px-6 py-24">
-        <div className="mx-auto max-w-7xl">
+      <div className="trust-strip">
+        <span>BUILT FOR TRUSTED INDEPENDENT WORK</span>
+        <div><span>✦ Clear agreements</span><span>◈ Protected payments</span><span>◎ Fair collaboration</span></div>
+      </div>
 
-          <div className="text-center">
-            <p className="text-sm font-semibold uppercase tracking-widest text-blue-400">
-              Simple Process
-            </p>
-            <h2 className="mt-4 text-4xl font-bold">
-              How SafeDeal X Works
-            </h2>
-          </div>
-
-          <div className="mt-16 grid gap-10 md:grid-cols-4">
-
-            {[
-              {
-                number: "01",
-                title: "Create Agreement",
-                description: "Client and freelancer define project scope, deadlines and milestones."
-              },
-              {
-                number: "02",
-                title: "Secure Funds",
-                description: "Client deposits the agreed funds into blockchain escrow."
-              },
-              {
-                number: "03",
-                title: "Submit Work",
-                description: "Freelancer submits deliverables for review against agreed requirements."
-              },
-              {
-                number: "04",
-                title: "Release Payment",
-                description: "Approved milestones trigger payment release through the smart contract."
-              }
-            ].map((step) => (
-              <div key={step.number} className="relative">
-                <div className="text-4xl font-bold text-blue-500/50">
-                  {step.number}
-                </div>
-                <h3 className="mt-5 text-xl font-semibold">
-                  {step.title}
-                </h3>
-                <p className="mt-3 text-sm leading-7 text-slate-400">
-                  {step.description}
-                </p>
-              </div>
-            ))}
-
-          </div>
+      <section id="features" className="features-section">
+        <div className="section-heading">
+          <p className="section-kicker">A better way to work</p>
+          <h2>Everything in sync.<br /><span>Everyone protected.</span></h2>
+          <p>Thoughtful tools that help good work move forward with clarity and confidence.</p>
+        </div>
+        <div className="feature-grid">
+          {[
+            { icon: "▤", title: "AI contract intelligence", description: "Spot unclear terms and shape agreements around milestones everyone understands.", color: "lavender" },
+            { icon: "◈", title: "Blockchain escrow", description: "Keep payments protected and transparent from kickoff through completion.", color: "blue" },
+            { icon: "✧", title: "Deliverable verification", description: "Compare submitted work against the expectations you agreed on together.", color: "sky" },
+            { icon: "⚖", title: "Fair dispute support", description: "Bring context and evidence together for balanced, informed decisions.", color: "peach" },
+            { icon: "↗", title: "Transaction insights", description: "Understand project risks early with data-informed guidance.", color: "mint" },
+            { icon: "☆", title: "Trust that compounds", description: "Build a reputation through completed milestones and reliable work.", color: "rose" },
+          ].map((feature) => (
+            <article className="feature-card" key={feature.title}>
+              <span className={`feature-icon ${feature.color}`}>{feature.icon}</span>
+              <h3>{feature.title}</h3>
+              <p>{feature.description}</p>
+              <span className="feature-arrow" aria-hidden="true">↗</span>
+            </article>
+          ))}
         </div>
       </section>
 
-      {/* Call To Action */}
-      <section id="about" className="px-6 pb-24">
-        <div className="mx-auto max-w-7xl rounded-3xl border border-blue-500/20 bg-gradient-to-br from-blue-950 to-[#111827] px-8 py-16 text-center">
-
-          <h2 className="text-3xl font-bold md:text-4xl">
-            Make every transaction count.
-          </h2>
-
-          <p className="mx-auto mt-5 max-w-2xl leading-7 text-slate-400">
-            Build stronger professional relationships with transparent
-            agreements, protected payments and intelligent assistance.
-          </p>
-
-          <button className="mt-8 rounded-lg bg-blue-600 px-8 py-3.5 font-semibold transition hover:bg-blue-500">
-            Get Started →
-          </button>
-
+      <section id="how-it-works" className="steps-section">
+        <div className="steps-intro">
+          <p className="section-kicker">Simple by design</p>
+          <h2>From first hello<br />to <span>work well done.</span></h2>
+          <p>Keep the important details clear, so you can focus on the work that matters.</p>
+        </div>
+        <div className="steps-list">
+          {[
+            { number: "01", title: "Agree on the work", description: "Set the scope, milestones, and expectations together." },
+            { number: "02", title: "Secure the payment", description: "Funds are held safely while the work gets underway." },
+            { number: "03", title: "Share progress", description: "Submit deliverables and review them against your agreement." },
+            { number: "04", title: "Celebrate the finish", description: "Approve completed milestones and release payment with confidence." },
+          ].map((step) => (
+            <article className="step-item" key={step.number}>
+              <span className="step-number">{step.number}</span>
+              <div><h3>{step.title}</h3><p>{step.description}</p></div>
+              <span className="step-chevron" aria-hidden="true">↗</span>
+            </article>
+          ))}
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-800 px-6 py-8">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 md:flex-row">
+      <section id="about" className="closing-section">
+        <div className="closing-orb" aria-hidden="true" />
+        <p className="section-kicker">Make room for great work</p>
+        <h2>Trust makes good work<br /><span>feel even better.</span></h2>
+        <p>Build stronger professional relationships with clear agreements, secure payments, and a little more peace of mind.</p>
+        <button className="button button-light" onClick={() => setPage("register")}>Create your free account <span aria-hidden="true">→</span></button>
+      </section>
 
-          <p className="text-xl font-bold">
-            SafeDeal <span className="text-blue-500">X</span>
-          </p>
-
-          <p className="text-center text-sm text-slate-500">
-            Trust Before You Transact. © 2026 SafeDeal X.
-          </p>
-
-          <p className="text-sm text-slate-500">
-            AI + Blockchain + Trust
-          </p>
-
-        </div>
+      <footer className="landing-footer">
+        <a href="#" className="brand"><span className="brand-mark">S</span><span>SafeDeal<span className="brand-x">X</span></span></a>
+        <p>Trust before you transact. © 2026 SafeDeal X.</p>
+        <span>AI · Blockchain · Trust</span>
       </footer>
-
-
     </main>
-  )
+  );
 }
 
-export default App
+export default App;

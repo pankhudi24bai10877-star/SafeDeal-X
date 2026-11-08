@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/auth.routes";
 import projectRoutes from "./routes/project.routes";
 import { prisma } from "./lib/prisma";
-
+import userRoutes from "./routes/user.routes";
 dotenv.config();
 
 const app = express();
@@ -59,7 +59,7 @@ app.get("/api/db-check", async (req, res) => {
 // API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectRoutes);
-
+app.use("/api/users", userRoutes);
 // Start server
 app.listen(PORT, () => {
   console.log(`SafeDeal X backend running on http://localhost:${PORT}`);
